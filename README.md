@@ -1,0 +1,1 @@
+# boardgames-admin-panel-fe
