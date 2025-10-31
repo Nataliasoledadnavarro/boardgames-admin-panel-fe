@@ -1,0 +1,1 @@
+echo '🔍 Ejecutando validaciones pre-commit...' && echo '��� Ejecutando lint-staged...' && npx lint-staged && echo '✅ Pre-commit completado'

@@ -1,0 +1,1 @@
+echo '🔍 Validando mensaje de commit...' && node scripts/validate-commit-msg.js $1
