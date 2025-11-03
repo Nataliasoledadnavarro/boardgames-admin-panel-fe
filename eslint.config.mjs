@@ -17,8 +17,8 @@ const eslintConfig = defineConfig([
       "@typescript-eslint/no-unused-vars": "error",
       "@typescript-eslint/no-explicit-any": "warn",
       "react/react-in-jsx-scope": "off",
-      "react/prop-types": "off"
-    }
+      "react/prop-types": "off",
+    },
   },
   globalIgnores([
     ".next/**",
@@ -28,7 +28,7 @@ const eslintConfig = defineConfig([
     "node_modules/**",
     "coverage/**",
     ".git/**",
-    "scripts/**" // Excluir scripts de validación
+    "scripts/**", // Excluir scripts de validación
   ]),
 ]);
 
