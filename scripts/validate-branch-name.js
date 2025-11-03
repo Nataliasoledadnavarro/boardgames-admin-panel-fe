@@ -1,19 +1,19 @@
-const { execSync } = require("child_process");
+const { execSync } = require('child_process');
 
 // Obtener nombre de la rama actual
-const branchName = execSync("git rev-parse --abbrev-ref HEAD", {
-  encoding: "utf8",
+const branchName = execSync('git rev-parse --abbrev-ref HEAD', {
+  encoding: 'utf8',
 }).trim();
 
 // Patrón para nombres de rama válidos
 const branchPattern = /^(feature|bugfix|hotfix|release|chore)\/[a-z0-9-]+$/;
 
-console.log("🌿 Validando nombre de rama...");
+console.log('🌿 Validando nombre de rama...');
 
 // Permitir ramas principales
-const allowedBranches = ["main", "master", "develop"];
+const allowedBranches = ['main', 'master', 'develop'];
 if (allowedBranches.includes(branchName)) {
-  console.log("✅ Rama principal válida");
+  console.log('✅ Rama principal válida');
   process.exit(0);
 }
 
@@ -35,4 +35,4 @@ Ejemplo: feature/crud-productos
   process.exit(1);
 }
 
-console.log("✅ Nombre de rama válido");
+console.log('✅ Nombre de rama válido');
