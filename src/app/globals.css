@@ -112,6 +112,106 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* === CLASES SIN @APPLY (CSS puro) === */
+
+/* Gradientes de marca */
+.gradient-primary {
+  background: linear-gradient(135deg, #2563eb, #9333ea);
+}
+
+.gradient-primary-text {
+  background: linear-gradient(135deg, #2563eb, #9333ea);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.gradient-secondary {
+  background: linear-gradient(135deg, #6366f1, #06b6d4);
+}
+
+.gradient-success {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.gradient-warning {
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
+}
+
+.gradient-danger {
+  background: linear-gradient(135deg, #ef4444, #f43f5e);
+}
+
+/* Fondos de página */
+.bg-page-light {
+  background: linear-gradient(135deg, #f8fafc, #eff6ff, #e0e7ff);
+}
+
+.bg-page-dark {
+  background: linear-gradient(135deg, #0f172a, #1e293b, #0f172a);
+}
+
+/* Efectos glassmorphism */
+.glass {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: hsl(var(--card) / 0.7);
+  border: 1px solid hsl(var(--border) / 0.3);
+  box-shadow: 0 8px 32px hsl(var(--foreground) / 0.1);
+}
+
+.glass-sidebar {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: hsl(var(--sidebar) / 0.8);
+  border-right: 1px solid hsl(var(--sidebar-border) / 0.5);
+  box-shadow: 4px 0 24px hsl(var(--foreground) / 0.05);
+}
+
+.glass-header {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: hsl(var(--background) / 0.9);
+  border-bottom: 1px solid hsl(var(--border) / 0.6);
+}
+
+.glass-card {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: hsl(var(--card) / 0.8);
+  border: 1px solid hsl(var(--border) / 0.4);
+  box-shadow: 0 8px 32px hsl(var(--foreground) / 0.08);
+}
+
+/* Texto con efectos */
+.text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* === CLASES CON @APPLY === */
+@layer utilities {
+  .interactive-hover {
+    @apply transition-all duration-200 hover:scale-105 hover:shadow-lg;
+  }
+
+  .button-primary {
+    @apply text-white font-medium px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105 hover:shadow-lg;
+    background: linear-gradient(135deg, #2563eb, #9333ea);
+  }
+
+  .button-secondary {
+    @apply bg-secondary text-secondary-foreground font-medium px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105 hover:shadow-lg border border-border/50;
+  }
+
+  .text-gradient-primary {
+    @apply font-bold;
+    background: linear-gradient(135deg, #2563eb, #9333ea);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
