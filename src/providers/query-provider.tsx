@@ -15,7 +15,7 @@ export function QueryProvider({ children }: QueryProviderProps) {
         defaultOptions: {
           queries: {
             // Tiempo de cache por defecto
-            staleTime: 60 * 1000, // 1 minuto
+            staleTime: 60 * 1000,
             // Reintento automático
             retry: 1,
             // No refetch en window focus (para desarrollo)

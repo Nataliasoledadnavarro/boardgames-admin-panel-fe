@@ -4,6 +4,7 @@ export interface Category {
   description: string;
   createdAt: Date;
   updatedAt: Date;
+  productCount?: number;
 }
 
 export interface CreateCategoryDto {

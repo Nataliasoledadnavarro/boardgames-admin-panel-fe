@@ -9,7 +9,15 @@ export const CATEGORIES_QUERY_KEY = 'categories';
 export const useCategories = () => {
   return useQuery({
     queryKey: [CATEGORIES_QUERY_KEY],
-    queryFn: categoriesService.getAll,
+    queryFn: async () => {
+      const [data] = await Promise.all([
+        categoriesService.getAll(),
+        new Promise(resolve => setTimeout(resolve, 2000)),
+      ]);
+      return data;
+    },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 };
 
