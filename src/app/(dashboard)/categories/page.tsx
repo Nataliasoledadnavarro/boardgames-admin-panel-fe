@@ -9,15 +9,11 @@ import { SearchBar } from '@/components/ui/search-bar';
 import { ControlsBar } from '@/components/ui/controls-bar';
 import { ConfirmationModal, useConfirmation } from '@/components/ui/confirmation-modal';
 import { FormModal } from '@/components/ui/form-modal';
-import { ErrorState } from '@/components/ui/error-state'; // ✅ Nuevo import
-import {
-  DataTable,
-  DataTableColumn,
-  DataTableAction,
-  formatTableDate,
-} from '@/components/ui/data-table';
+import { ErrorState } from '@/components/ui/error-state';
+import { DataTable, DataTableColumn, DataTableAction } from '@/components/ui/data-table';
 import { Plus, Edit, Trash2, FolderOpen } from 'lucide-react';
 import { Category } from '@/types';
+import { formatTableDate } from '@/lib/utils/date';
 
 export default function CategoriesPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -80,7 +76,7 @@ export default function CategoriesPage() {
       label: 'Editar categoría',
       icon: <Edit className="h-4 w-4" />,
       onClick: category => categoryModal.openWith(category),
-      className: 'hover:bg-blue-500/10 hover:text-blue-600',
+      className: 'hover:bg-purple-500/10 hover:text-purple-600',
     },
     {
       label: 'Eliminar categoría',

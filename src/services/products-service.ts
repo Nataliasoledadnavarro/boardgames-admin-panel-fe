@@ -1,6 +1,6 @@
 import { Product, CreateProductDto, UpdateProductDto } from '@/types';
 
-// Datos simulados (más adelante será tu API Java)
+// Datos simulados
 const mockProducts: Product[] = [
   {
     id: '1',
@@ -34,55 +34,63 @@ const mockProducts: Product[] = [
   },
 ];
 
-// Simular delay de red como tu API real
+// Contador estático para IDs determinísticos
+let mockIdCounter = 1000;
+
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const productsService = {
-  // GET /api/products
   getAll: async (): Promise<Product[]> => {
     await delay(500);
     return [...mockProducts];
   },
 
-  // GET /api/products/:id
   getById: async (id: string): Promise<Product | null> => {
     await delay(300);
     return mockProducts.find(p => p.id === id) || null;
   },
 
-  // POST /api/products
+  // Crear producto con valores determinísticos
   create: async (data: CreateProductDto): Promise<Product> => {
     await delay(800);
+
+    // ID incremental en lugar de Date.now()
+    mockIdCounter++;
+
+    // Fecha fija para mock (en producción esto vendría del servidor)
+    const now = new Date('2024-11-10T12:00:00Z'); // Fecha fija
+
     const newProduct: Product = {
       ...data,
-      id: Date.now().toString(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      id: mockIdCounter.toString(),
+      createdAt: now,
+      updatedAt: now,
     };
+
     mockProducts.push(newProduct);
     return newProduct;
   },
 
-  // PUT /api/products/:id
   update: async (data: UpdateProductDto): Promise<Product> => {
     await delay(600);
     const index = mockProducts.findIndex(p => p.id === data.id);
     if (index === -1) throw new Error('Producto no encontrado');
 
+    // Fecha fija para mock
+    const now = new Date('2024-11-10T12:00:00Z');
+
     mockProducts[index] = {
       ...mockProducts[index],
       ...data,
-      updatedAt: new Date(),
+      updatedAt: now,
     };
     return mockProducts[index];
   },
 
-  // DELETE /api/products/:id
   delete: async (id: string): Promise<void> => {
     await delay(400);
     const index = mockProducts.findIndex(p => p.id === id);
     if (index === -1) throw new Error('Producto no encontrado');
-
     mockProducts.splice(index, 1);
   },
 };

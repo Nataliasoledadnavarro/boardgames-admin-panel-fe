@@ -28,6 +28,9 @@ const mockCategories: Category[] = [
 // Simular delay de red
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+// Contador estático para IDs
+let mockCategoryIdCounter = 100;
+
 export const categoriesService = {
   // GET /api/categories
   getAll: async (): Promise<Category[]> => {
@@ -44,26 +47,37 @@ export const categoriesService = {
   // POST /api/categories
   create: async (data: CreateCategoryDto): Promise<Category> => {
     await delay(600);
+
+    // ID incremental determinístico
+    mockCategoryIdCounter++;
+
+    // Fecha fija para mock
+    const now = new Date('2024-11-10T12:00:00Z');
+
     const newCategory: Category = {
       ...data,
-      id: Date.now().toString(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      id: mockCategoryIdCounter.toString(),
+      createdAt: now,
+      updatedAt: now,
     };
+
     mockCategories.push(newCategory);
     return newCategory;
   },
 
   // PUT /api/categories/:id
   update: async (data: UpdateCategoryDto): Promise<Category> => {
-    await delay(500);
+    await delay(600);
     const index = mockCategories.findIndex(c => c.id === data.id);
     if (index === -1) throw new Error('Categoría no encontrada');
+
+    // Fecha fija para mock
+    const now = new Date('2024-11-10T12:00:00Z');
 
     mockCategories[index] = {
       ...mockCategories[index],
       ...data,
-      updatedAt: new Date(),
+      updatedAt: now,
     };
     return mockCategories[index];
   },

@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
 import { cn } from '@/lib/utils';
 
 // Definición de columna genérica
@@ -152,19 +153,16 @@ export function DataTable<T extends Record<string, any>>({
     return renderSkeletonTable();
   }
 
-  // Estado vacío
   if (data.length === 0 && emptyState) {
     return (
-      <div className={cn('glass-card rounded-xl p-6', className)}>
-        <div className="text-center py-12">
-          {emptyState.icon && (
-            <div className="mx-auto mb-4 text-muted-foreground">{emptyState.icon}</div>
-          )}
-          <h3 className="text-lg font-semibold text-foreground mb-2">{emptyState.title}</h3>
-          <p className="text-muted-foreground mb-4">{emptyState.description}</p>
-          {emptyState.action}
-        </div>
-      </div>
+      <EmptyState
+        icon={emptyState.icon}
+        title={emptyState.title}
+        description={emptyState.description}
+        action={emptyState.action}
+        variant="default"
+        className={className}
+      />
     );
   }
 
@@ -214,7 +212,11 @@ export function DataTable<T extends Record<string, any>>({
               ))}
               {actions.length > 0 && (
                 <TableCell className="text-right">
-                  <div className="flex justify-end gap-2">
+                  <div
+                    className="flex justify-end gap-2"
+                    role="group"
+                    aria-label="Acciones de fila"
+                  >
                     {actions.map((action, actionIndex) => (
                       <Button
                         key={actionIndex}
@@ -226,13 +228,14 @@ export function DataTable<T extends Record<string, any>>({
                         }}
                         disabled={action.disabled?.(row) || action.loading?.(row)}
                         className={action.className}
+                        aria-label={action.label}
                       >
                         {action.loading?.(row) ? (
                           <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                         ) : (
                           action.icon
                         )}
-                        {action.label && <span className="sr-only">{action.label}</span>}
+                        <span className="sr-only">{action.label}</span>
                       </Button>
                     ))}
                   </div>
@@ -251,47 +254,3 @@ export const createStatusBadge = (
   status: string,
   variant: 'default' | 'secondary' | 'destructive' | 'outline' = 'default'
 ) => <Badge variant={variant}>{status}</Badge>;
-
-export const formatTableDate = (
-  date: string | Date | null | undefined,
-  options: {
-    fallback?: string;
-    format?: 'short' | 'long' | 'full';
-  } = {}
-) => {
-  const { fallback = '-', format = 'short' } = options;
-
-  if (!date) return fallback;
-
-  try {
-    const dateObj = new Date(date);
-
-    if (isNaN(dateObj.getTime())) {
-      return fallback;
-    }
-
-    const formatOptions = {
-      short: {
-        day: '2-digit' as const,
-        month: 'short' as const,
-        year: 'numeric' as const,
-      },
-      long: {
-        day: '2-digit' as const,
-        month: 'long' as const,
-        year: 'numeric' as const,
-      },
-      full: {
-        weekday: 'long' as const,
-        day: '2-digit' as const,
-        month: 'long' as const,
-        year: 'numeric' as const,
-      },
-    };
-
-    return new Intl.DateTimeFormat('es', formatOptions[format]).format(dateObj);
-  } catch (error) {
-    console.warn('Error formatting date:', date, error);
-    return fallback;
-  }
-};
