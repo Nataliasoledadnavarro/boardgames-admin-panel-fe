@@ -3,14 +3,15 @@
 import { useState } from 'react';
 import { useProducts, useDeleteProduct } from '@/hooks/use-products';
 import { useModal } from '@/hooks/use-modal';
-import { PageHeader, createCountBadge } from '@/components/ui/page-header';
+import { PageHeader, createCountBadge } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { SearchBar } from '@/components/ui/search-bar';
-import { ControlsBar } from '@/components/ui/controls-bar';
+import { ControlsBar } from '@/components/layout/controls-bar';
 import { ConfirmationModal, useConfirmation } from '@/components/ui/confirmation-modal';
-import { FormModal } from '@/components/ui/form-modal';
+import { Modal } from '@/components/ui/modal';
 import { ErrorState } from '@/components/ui/error-state';
 import { DataTable, DataTableColumn, DataTableAction } from '@/components/ui/data-table';
+import { ProductDetailModal } from './product-detail-modal'; // ✅ Importar modal de detalles
 import { Plus, Edit, Trash2, Package, Eye } from 'lucide-react';
 import { Product } from '@/types/product';
 import { formatTableDate } from '@/lib/utils/date';
@@ -19,6 +20,7 @@ export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const productModal = useModal<Product>();
+  const detailModal = useModal<Product>(); // ✅ Hook para modal de detalles
   const { data: products = [], isLoading, error, refetch } = useProducts();
   const deleteProduct = useDeleteProduct();
   const confirmation = useConfirmation();
@@ -36,6 +38,11 @@ export default function ProductsPage() {
       },
       deleteProduct.isPending
     );
+  };
+
+  // ✅ Handler para ver detalles
+  const handleViewDetails = (product: Product) => {
+    detailModal.openWith(product);
   };
 
   // Filtrar productos por búsqueda
@@ -81,7 +88,7 @@ export default function ProductsPage() {
     {
       label: 'Ver detalles',
       icon: <Eye className="h-4 w-4" />,
-      onClick: product => console.log('Ver producto:', product.id),
+      onClick: handleViewDetails,
       className: 'hover:bg-blue-500/10 hover:text-blue-600',
     },
     {
@@ -134,7 +141,7 @@ export default function ProductsPage() {
           />
         }
         actions={
-          <FormModal
+          <Modal
             isOpen={productModal.isOpen}
             onOpenChange={open => (open ? productModal.open() : productModal.close())}
             title={productModal.isEditing ? 'Editar Producto' : 'Nuevo Producto'}
@@ -170,7 +177,7 @@ export default function ProductsPage() {
                 <div className="text-muted-foreground">Formulario de producto próximamente...</div>
               </div>
             </div>
-          </FormModal>
+          </Modal>
         }
       />
 
@@ -192,6 +199,13 @@ export default function ProductsPage() {
             </Button>
           ) : undefined,
         }}
+      />
+
+      {/* Modal de detalles */}
+      <ProductDetailModal
+        product={detailModal.selectedItem}
+        isOpen={detailModal.isOpen}
+        onClose={() => detailModal.close()}
       />
 
       {confirmation.confirmationProps && <ConfirmationModal {...confirmation.confirmationProps} />}

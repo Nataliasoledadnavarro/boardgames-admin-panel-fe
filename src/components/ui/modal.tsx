@@ -9,10 +9,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-//import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-interface FormModalProps {
+interface ModalProps {
   // Estado del modal
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -20,11 +19,12 @@ interface FormModalProps {
   // Contenido
   title: string;
   description?: string;
+  icon?: ReactNode;
 
   // Trigger button (opcional - puede abrirse programáticamente)
   trigger?: ReactNode;
 
-  // Form content
+  // Content
   children: ReactNode;
 
   // Tamaños
@@ -32,6 +32,7 @@ interface FormModalProps {
 
   // Estilos
   className?: string;
+  headerClassName?: string;
 }
 
 const sizeClasses = {
@@ -42,20 +43,25 @@ const sizeClasses = {
   full: 'max-w-7xl',
 };
 
-export function FormModal({
+export function Modal({
   isOpen,
   onOpenChange,
   title,
   description,
+  icon,
   trigger,
   children,
   size = 'md',
   className,
-}: FormModalProps) {
+  headerClassName,
+}: ModalProps) {
   const content = (
     <DialogContent className={cn(sizeClasses[size], className)}>
-      <DialogHeader>
-        <DialogTitle>{title}</DialogTitle>
+      <DialogHeader className={headerClassName}>
+        <DialogTitle className={cn(icon && 'flex items-center gap-2')}>
+          {icon}
+          {title}
+        </DialogTitle>
         {description && <DialogDescription>{description}</DialogDescription>}
       </DialogHeader>
 

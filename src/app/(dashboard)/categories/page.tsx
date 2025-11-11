@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { useCategories, useDeleteCategory } from '@/hooks';
 import { useModal } from '@/hooks/use-modal';
-import { PageHeader, createCountBadge } from '@/components/ui/page-header';
+import { PageHeader, createCountBadge } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { SearchBar } from '@/components/ui/search-bar';
-import { ControlsBar } from '@/components/ui/controls-bar';
+import { ControlsBar } from '@/components/layout/controls-bar';
 import { ConfirmationModal, useConfirmation } from '@/components/ui/confirmation-modal';
-import { FormModal } from '@/components/ui/form-modal';
+import { Modal } from '@/components/ui/modal';
 import { ErrorState } from '@/components/ui/error-state';
 import { DataTable, DataTableColumn, DataTableAction } from '@/components/ui/data-table';
 import { Plus, Edit, Trash2, FolderOpen } from 'lucide-react';
@@ -130,7 +130,7 @@ export default function CategoriesPage() {
           />
         }
         actions={
-          <FormModal
+          <Modal
             isOpen={categoryModal.isOpen}
             onOpenChange={open => (open ? categoryModal.open() : categoryModal.close())}
             title={categoryModal.isEditing ? 'Editar Categoría' : 'Nueva Categoría'}
@@ -165,7 +165,7 @@ export default function CategoriesPage() {
                 <div className="text-muted-foreground">Formulario de categoría próximamente...</div>
               </div>
             </div>
-          </FormModal>
+          </Modal>
         }
       />
 
