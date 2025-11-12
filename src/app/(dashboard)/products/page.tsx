@@ -10,8 +10,9 @@ import { ControlsBar } from '@/components/layout/controls-bar';
 import { ConfirmationModal, useConfirmation } from '@/components/ui/confirmation-modal';
 import { Modal } from '@/components/ui/modal';
 import { ErrorState } from '@/components/ui/error-state';
-import { DataTable, DataTableColumn, DataTableAction } from '@/components/ui/data-table';
-import { ProductDetailModal } from './product-detail-modal'; // ✅ Importar modal de detalles
+import { DataTable } from '@/components/ui/data-table';
+import { DataTableColumn, DataTableAction } from '@/types/data-table';
+import { ProductDetailModal } from './product-detail-modal';
 import { Plus, Edit, Trash2, Package, Eye } from 'lucide-react';
 import { Product } from '@/types/product';
 import { formatTableDate } from '@/lib/utils/date';
@@ -20,7 +21,7 @@ export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const productModal = useModal<Product>();
-  const detailModal = useModal<Product>(); // ✅ Hook para modal de detalles
+  const detailModal = useModal<Product>();
   const { data: products = [], isLoading, error, refetch } = useProducts();
   const deleteProduct = useDeleteProduct();
   const confirmation = useConfirmation();
@@ -40,7 +41,6 @@ export default function ProductsPage() {
     );
   };
 
-  // ✅ Handler para ver detalles
   const handleViewDetails = (product: Product) => {
     detailModal.openWith(product);
   };
@@ -52,35 +52,34 @@ export default function ProductsPage() {
       product.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Definir columnas de la tabla
   const columns: DataTableColumn<Product>[] = [
     {
       key: 'name',
       title: 'Nombre',
-      render: value => <span className="font-medium">{value}</span>,
+      render: value => <span className="font-medium">{String(value)}</span>,
     },
     {
       key: 'description',
       title: 'Descripción',
       className: 'max-w-md',
-      render: value => <span className="truncate block">{value}</span>,
+      render: value => <span className="truncate block">{String(value)}</span>,
     },
     {
       key: 'price',
       title: 'Precio',
       align: 'right',
-      render: value => (
-        <span className="font-mono font-semibold text-green-600">${Number(value).toFixed(2)}</span>
-      ),
+      render: value => {
+        const price = typeof value === 'number' ? value : Number(value) || 0;
+        return <span className="font-mono font-semibold text-green-600">${price.toFixed(2)}</span>;
+      },
     },
     {
       key: 'createdAt',
       title: 'Creado',
-      render: value => (
-        <span className="text-muted-foreground">
-          {formatTableDate(value instanceof Date ? value.toISOString() : value)}
-        </span>
-      ),
+      render: value => {
+        const date = value instanceof Date ? value : new Date(value as string);
+        return <span className="text-muted-foreground">{formatTableDate(date.toISOString())}</span>;
+      },
     },
   ];
 
@@ -106,19 +105,33 @@ export default function ProductsPage() {
     },
   ];
 
+  // ✅ Estado de error mejorado con componente reutilizable
   if (error) {
     return (
-      <ErrorState
-        title="Error al cargar productos"
-        description="No se pudieron obtener los productos. Verifica tu conexión e inténtalo de nuevo."
-        error={error}
-        onRetry={() => refetch()}
-        actions={
-          <Button onClick={() => (window.location.href = '/')} variant="outline">
-            Ir al Dashboard
-          </Button>
-        }
-      />
+      <div className="space-y-6">
+        <PageHeader
+          icon={<Package className="h-6 w-6 text-white" />}
+          title="Gestión de Productos"
+          description="Administra tu inventario de productos"
+          badge={createCountBadge(0, 'producto')}
+        />
+
+        <ErrorState
+          title="Error al cargar productos"
+          description="No se pudieron obtener los productos desde el servidor. Verifica tu conexión e inténtalo de nuevo."
+          error={error}
+          icon={<Package className="h-8 w-8" />}
+          onRetry={() => refetch()}
+          showRetry={true}
+          showGoHome={true}
+          variant="default"
+          actions={
+            <Button onClick={() => window.location.reload()} variant="outline" className="ml-2">
+              Recargar página
+            </Button>
+          }
+        />
+      </div>
     );
   }
 
@@ -181,6 +194,7 @@ export default function ProductsPage() {
         }
       />
 
+      {/* ✅ DataTable con EmptyState mejorado integrado */}
       <DataTable
         data={filteredProducts}
         columns={columns}
@@ -188,20 +202,23 @@ export default function ProductsPage() {
         loading={isLoading}
         emptyState={{
           icon: <Package className="h-12 w-12" />,
-          title: searchTerm ? 'No se encontraron productos' : 'Sin productos',
+          title: searchTerm ? 'No se encontraron productos' : 'Sin productos registrados',
           description: searchTerm
-            ? 'Intenta con otros términos de búsqueda'
-            : 'Comienza agregando tu primer producto',
+            ? `No hay productos que coincidan con "${searchTerm}". Intenta con otros términos de búsqueda.`
+            : 'Comienza agregando tu primer juego de mesa al inventario.',
           action: !searchTerm ? (
             <Button onClick={() => productModal.open()} className="button-primary">
               <Plus className="h-4 w-4 mr-2" />
-              Nuevo Producto
+              Crear primer producto
             </Button>
-          ) : undefined,
+          ) : (
+            <Button onClick={() => setSearchTerm('')} variant="outline">
+              Limpiar búsqueda
+            </Button>
+          ),
         }}
       />
 
-      {/* Modal de detalles */}
       <ProductDetailModal
         product={detailModal.selectedItem}
         isOpen={detailModal.isOpen}

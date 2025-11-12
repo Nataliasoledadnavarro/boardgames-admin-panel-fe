@@ -12,47 +12,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { EmptyState } from '@/components/ui/empty-state'; // ✅ Nuevo import
+import { EmptyState } from '@/components/ui/empty-state';
 import { cn } from '@/lib/utils';
-
-// Definición de columna genérica
-export interface DataTableColumn<T> {
-  key: keyof T | string;
-  title: string;
-  width?: string;
-  align?: 'left' | 'center' | 'right';
-  sortable?: boolean;
-  render?: (value: any, row: T, index: number) => ReactNode;
-  className?: string;
-}
-
-// Definición de acción
-export interface DataTableAction<T> {
-  label: string;
-  icon?: ReactNode;
-  onClick: (row: T) => void;
-  variant?: 'default' | 'destructive' | 'secondary' | 'ghost';
-  className?: string;
-  disabled?: (row: T) => boolean;
-  loading?: (row: T) => boolean;
-}
-
-// Props del componente
-interface DataTableProps<T> {
-  data: T[];
-  columns: DataTableColumn<T>[];
-  actions?: DataTableAction<T>[];
-  loading?: boolean;
-  emptyState?: {
-    icon?: ReactNode;
-    title: string;
-    description: string;
-    action?: ReactNode;
-  };
-  onRowClick?: (row: T) => void;
-  rowClassName?: (row: T) => string;
-  className?: string;
-}
+import { DataTableColumn, DataTableProps } from '@/types/data-table';
 
 export function DataTable<T extends Record<string, any>>({
   data,
@@ -72,7 +34,7 @@ export function DataTable<T extends Record<string, any>>({
           return obj && typeof obj === 'object' ? obj[key] : undefined;
         }, row);
       }
-      return row[column.key as keyof T];
+      return row[column.key];
     } catch (error) {
       console.warn('Error getting cell value:', column.key, error);
       return undefined;
@@ -96,12 +58,13 @@ export function DataTable<T extends Record<string, any>>({
     return <span>{String(value)}</span>;
   };
 
-  // Renderizar contenido de celda
+  // ✅ Renderizar contenido de celda con tipado corregido
   const renderCellContent = (column: DataTableColumn<T>, row: T, index: number): ReactNode => {
     const value = getCellValue(row, column);
 
     if (column.render) {
-      return column.render(value, row, index);
+      // ✅ Pasar el valor con 'as any' para que la función render maneje el tipado específico
+      return column.render(value as any, row, index);
     }
 
     return renderPrimitiveValue(value);

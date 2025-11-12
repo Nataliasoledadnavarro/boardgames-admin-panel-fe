@@ -98,7 +98,6 @@ const mockProducts: Product[] = [
     description: 'Producto de prueba sin imagen para verificar el fallback.',
     price: 15.99,
     categoryId: '1',
-    // ✅ Sin imageUrl para probar el fallback
     createdAt: new Date('2024-02-20T10:00:00Z'),
     updatedAt: new Date('2024-02-20T10:00:00Z'),
   },

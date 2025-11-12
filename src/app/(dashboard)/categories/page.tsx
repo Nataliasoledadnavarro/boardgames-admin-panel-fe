@@ -10,7 +10,8 @@ import { ControlsBar } from '@/components/layout/controls-bar';
 import { ConfirmationModal, useConfirmation } from '@/components/ui/confirmation-modal';
 import { Modal } from '@/components/ui/modal';
 import { ErrorState } from '@/components/ui/error-state';
-import { DataTable, DataTableColumn, DataTableAction } from '@/components/ui/data-table';
+import { DataTable } from '@/components/ui/data-table';
+import { DataTableColumn, DataTableAction } from '@/types/data-table';
 import { Plus, Edit, Trash2, FolderOpen } from 'lucide-react';
 import { Category } from '@/types';
 import { formatTableDate } from '@/lib/utils/date';
@@ -51,23 +52,29 @@ export default function CategoriesPage() {
     {
       key: 'name',
       title: 'Nombre',
-      render: value => <span className="font-medium">{value}</span>,
+      render: value => <span className="font-medium">{String(value)}</span>,
     },
     {
       key: 'description',
       title: 'Descripción',
       className: 'max-w-md',
-      render: value => <span className="truncate block">{value}</span>,
+      render: value => <span className="truncate block">{String(value)}</span>,
     },
     {
       key: 'createdAt',
       title: 'Creada',
-      render: value => <span className="text-muted-foreground">{formatTableDate(value)}</span>,
+      render: value => {
+        const date = value instanceof Date ? value : new Date(value as string);
+        return <span className="text-muted-foreground">{formatTableDate(date.toISOString())}</span>;
+      },
     },
     {
       key: 'updatedAt',
       title: 'Actualizada',
-      render: value => <span className="text-muted-foreground">{formatTableDate(value)}</span>,
+      render: value => {
+        const date = value instanceof Date ? value : new Date(value as string);
+        return <span className="text-muted-foreground">{formatTableDate(date.toISOString())}</span>;
+      },
     },
   ];
 
@@ -93,7 +100,7 @@ export default function CategoriesPage() {
     },
   ];
 
-  // ErrorState reutilizable con retry
+  // ErrorState
   if (error) {
     return (
       <ErrorState
@@ -119,7 +126,7 @@ export default function CategoriesPage() {
         badge={createCountBadge(categories.length, 'categoría')}
       />
 
-      {/* ControlsBar con FormModal reutilizable */}
+      {/* ControlsBar */}
       <ControlsBar
         searchElement={
           <SearchBar
