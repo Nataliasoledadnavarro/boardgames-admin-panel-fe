@@ -7,7 +7,8 @@ const mockProducts: Product[] = [
     description:
       'Juego de estrategia donde construyes asentamientos y ciudades en la isla de Catan.',
     price: 45.99,
-    categoryId: '1', // Estrategia
+    categoryId: '1',
+    categoryName: 'Estrategia',
     imageUrl: 'https://picsum.photos/seed/catan/400/300',
     createdAt: new Date('2024-01-15T10:30:00Z'),
     updatedAt: new Date('2024-01-15T10:30:00Z'),
@@ -17,7 +18,8 @@ const mockProducts: Product[] = [
     name: 'Ticket to Ride',
     description: 'Aventura ferroviaria donde conectas ciudades a través de rutas de tren.',
     price: 52.99,
-    categoryId: '2', // Familiares
+    categoryId: '2',
+    categoryName: 'Familiares',
     imageUrl: 'https://picsum.photos/seed/train/400/300',
     createdAt: new Date('2024-02-01T14:15:00Z'),
     updatedAt: new Date('2024-02-10T09:45:00Z'),
@@ -27,7 +29,8 @@ const mockProducts: Product[] = [
     name: 'Exploding Kittens',
     description: 'Juego de cartas estratégico lleno de gatitos, explosiones y láser.',
     price: 19.99,
-    categoryId: '2', // Cartas
+    categoryId: '2',
+    categoryName: 'Cartas',
     imageUrl: 'https://picsum.photos/seed/kittens/400/300',
     createdAt: new Date('2024-02-05T16:20:00Z'),
     updatedAt: new Date('2024-02-05T16:20:00Z'),
@@ -37,7 +40,8 @@ const mockProducts: Product[] = [
     name: 'Pandemic',
     description: 'Juego cooperativo donde trabajas en equipo para salvar al mundo de enfermedades.',
     price: 39.99,
-    categoryId: '1', // Estrategia
+    categoryId: '1',
+    categoryName: 'Estrategia',
     imageUrl: 'https://picsum.photos/seed/pandemic/400/300',
     createdAt: new Date('2024-02-08T11:00:00Z'),
     updatedAt: new Date('2024-02-15T13:30:00Z'),
@@ -47,7 +51,8 @@ const mockProducts: Product[] = [
     name: 'Azul',
     description: 'Hermoso juego de colocación de azulejos inspirado en los mosaicos portugueses.',
     price: 42.5,
-    categoryId: '1', // Estrategia
+    categoryId: '1',
+    categoryName: 'Estrategia',
     imageUrl: 'https://picsum.photos/seed/azul/400/300',
     createdAt: new Date('2024-02-10T08:45:00Z'),
     updatedAt: new Date('2024-02-10T08:45:00Z'),
@@ -57,7 +62,8 @@ const mockProducts: Product[] = [
     name: 'Expansión Catan: Navegantes',
     description: 'Expansión que añade exploración marítima y nuevos escenarios a Catan.',
     price: 28.99,
-    categoryId: '4', // Expansiones
+    categoryId: '4',
+    categoryName: 'Expansiones',
     imageUrl: 'https://picsum.photos/seed/seafarers/400/300',
     createdAt: new Date('2024-02-12T15:10:00Z'),
     updatedAt: new Date('2024-02-12T15:10:00Z'),
@@ -67,7 +73,8 @@ const mockProducts: Product[] = [
     name: 'UNO',
     description: 'El clásico juego de cartas familiar que todos conocen y aman.',
     price: 12.99,
-    categoryId: '2', // Cartas
+    categoryId: '2',
+    categoryName: 'Cartas',
     imageUrl: 'https://picsum.photos/seed/uno/400/300',
     createdAt: new Date('2024-02-14T12:25:00Z'),
     updatedAt: new Date('2024-02-14T12:25:00Z'),
@@ -77,7 +84,8 @@ const mockProducts: Product[] = [
     name: 'Monopoly Clásico',
     description: 'El juego de bienes raíces más famoso del mundo.',
     price: 34.99,
-    categoryId: '3', // Familiares
+    categoryId: '3',
+    categoryName: 'Familiares',
     imageUrl: 'https://picsum.photos/seed/monopoly/400/300',
     createdAt: new Date('2024-02-16T09:15:00Z'),
     updatedAt: new Date('2024-02-18T14:50:00Z'),
@@ -87,7 +95,8 @@ const mockProducts: Product[] = [
     name: 'Scrabble',
     description: 'Juego de palabras donde la estrategia y el vocabulario son clave.',
     price: 29.99,
-    categoryId: '3', // Familiares
+    categoryId: '3',
+    categoryName: 'Familiares',
     imageUrl: 'https://picsum.photos/seed/scrabble/400/300',
     createdAt: new Date('2024-02-18T13:40:00Z'),
     updatedAt: new Date('2024-02-18T13:40:00Z'),
@@ -98,6 +107,7 @@ const mockProducts: Product[] = [
     description: 'Producto de prueba sin imagen para verificar el fallback.',
     price: 15.99,
     categoryId: '1',
+    categoryName: 'Estrategia',
     createdAt: new Date('2024-02-20T10:00:00Z'),
     updatedAt: new Date('2024-02-20T10:00:00Z'),
   },
