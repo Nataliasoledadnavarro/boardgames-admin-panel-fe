@@ -1,7 +1,7 @@
 'use client';
 
 import { Product } from '@/types/product';
-import { Modal } from '@/components/ui/modal'; // ✅ Usar componente reutilizable
+import { Modal } from '@/components/ui/modal';
 import { ProductImage } from './product-image';
 import { formatTableDate } from '@/lib/utils/date';
 import { Package, DollarSign, Tag, Calendar } from 'lucide-react';

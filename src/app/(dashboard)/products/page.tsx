@@ -105,7 +105,6 @@ export default function ProductsPage() {
     },
   ];
 
-  // ✅ Estado de error mejorado con componente reutilizable
   if (error) {
     return (
       <div className="space-y-6">
@@ -194,7 +193,6 @@ export default function ProductsPage() {
         }
       />
 
-      {/* ✅ DataTable con EmptyState mejorado integrado */}
       <DataTable
         data={filteredProducts}
         columns={columns}

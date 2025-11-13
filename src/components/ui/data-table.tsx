@@ -58,12 +58,10 @@ export function DataTable<T extends Record<string, any>>({
     return <span>{String(value)}</span>;
   };
 
-  // ✅ Renderizar contenido de celda con tipado corregido
   const renderCellContent = (column: DataTableColumn<T>, row: T, index: number): ReactNode => {
     const value = getCellValue(row, column);
 
     if (column.render) {
-      // ✅ Pasar el valor con 'as any' para que la función render maneje el tipado específico
       return column.render(value as any, row, index);
     }
 
