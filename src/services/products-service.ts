@@ -139,7 +139,7 @@ export const productsService = {
     const newProduct: Product = {
       ...data,
       id: mockIdCounter.toString(),
-      // ✅ Generar imageUrl automáticamente si no se proporciona
+      // Generar imageUrl automáticamente si no se proporciona
       imageUrl: data.imageUrl || `https://picsum.photos/seed/game${mockIdCounter}/400/300`,
       createdAt: now,
       updatedAt: now,
