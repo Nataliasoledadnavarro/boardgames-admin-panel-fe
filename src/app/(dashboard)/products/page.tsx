@@ -13,6 +13,7 @@ import { ErrorState } from '@/components/ui/error-state';
 import { DataTable } from '@/components/ui/data-table';
 import { DataTableColumn, DataTableAction } from '@/types/data-table';
 import { ProductDetailModal } from './product-detail-modal';
+import { ProductForm } from './product-form';
 import { Plus, Edit, Trash2, Package, Eye } from 'lucide-react';
 import { Product } from '@/types/product';
 import { formatTableDate } from '@/lib/utils/date';
@@ -170,24 +171,12 @@ export default function ProductsPage() {
             }
             size="md"
           >
-            <div className="p-4 text-center text-muted-foreground">
-              <div className="space-y-4">
-                <div className="text-sm">
-                  {productModal.isEditing ? 'Editando:' : 'Creando nuevo producto'}
-                </div>
-                {productModal.selectedItem && (
-                  <div className="text-xs bg-muted p-2 rounded">
-                    <strong>Datos actuales:</strong>
-                    <br />
-                    Nombre: {productModal.selectedItem.name}
-                    <br />
-                    Precio: ${productModal.selectedItem.price}
-                    <br />
-                    Descripción: {productModal.selectedItem.description}
-                  </div>
-                )}
-                <div className="text-muted-foreground">Formulario de producto próximamente...</div>
-              </div>
+            <div className="space-y-4">
+              <ProductForm
+                product={productModal.selectedItem}
+                onClose={() => productModal.close()}
+                onSuccess={() => refetch()}
+              />
             </div>
           </Modal>
         }
