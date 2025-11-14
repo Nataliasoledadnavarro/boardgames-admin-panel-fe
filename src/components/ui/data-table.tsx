@@ -13,8 +13,16 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import { DataTableColumn, DataTableProps } from '@/types/data-table';
+import { EllipsisVertical } from 'lucide-react';
 
 export function DataTable<T extends Record<string, any>>({
   data,
@@ -82,7 +90,7 @@ export function DataTable<T extends Record<string, any>>({
                   {column.title}
                 </TableHead>
               ))}
-              {actions.length > 0 && <TableHead className="text-right">Acciones</TableHead>}
+              {actions.length > 0 && <TableHead>Acciones</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -94,11 +102,8 @@ export function DataTable<T extends Record<string, any>>({
                   </TableCell>
                 ))}
                 {actions.length > 0 && (
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Skeleton className="h-8 w-8 rounded" variant="dark" />
-                      <Skeleton className="h-8 w-8 rounded" variant="dark" />
-                    </div>
+                  <TableCell>
+                    <Skeleton className="h-8 w-8 rounded" variant="dark" />
                   </TableCell>
                 )}
               </TableRow>
@@ -135,17 +140,13 @@ export function DataTable<T extends Record<string, any>>({
             {columns.map((column, index) => (
               <TableHead
                 key={index}
-                className={cn(
-                  column.className,
-                  column.align === 'center' && 'text-center',
-                  column.align === 'right' && 'text-right'
-                )}
+                className={cn(column.className)}
                 style={{ width: column.width }}
               >
                 {column.title}
               </TableHead>
             ))}
-            {actions.length > 0 && <TableHead className="text-right">Acciones</TableHead>}
+            {actions.length > 0 && <TableHead>Acciones</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -160,46 +161,64 @@ export function DataTable<T extends Record<string, any>>({
               onClick={() => onRowClick?.(row)}
             >
               {columns.map((column, colIndex) => (
-                <TableCell
-                  key={colIndex}
-                  className={cn(
-                    column.className,
-                    column.align === 'center' && 'text-center',
-                    column.align === 'right' && 'text-right'
-                  )}
-                >
+                <TableCell key={colIndex} className={cn(column.className)}>
                   {renderCellContent(column, row, rowIndex)}
                 </TableCell>
               ))}
               {actions.length > 0 && (
-                <TableCell className="text-right">
-                  <div
-                    className="flex justify-end gap-2"
-                    role="group"
-                    aria-label="Acciones de fila"
-                  >
-                    {actions.map((action, actionIndex) => (
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
                       <Button
-                        key={actionIndex}
-                        variant={action.variant || 'ghost'}
-                        size="sm"
-                        onClick={e => {
-                          e.stopPropagation();
-                          action.onClick(row);
-                        }}
-                        disabled={action.disabled?.(row) || action.loading?.(row)}
-                        className={action.className}
-                        aria-label={action.label}
+                        variant="ghost"
+                        className="h-8 w-8 p-0"
+                        onClick={e => e.stopPropagation()}
                       >
-                        {action.loading?.(row) ? (
-                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                        ) : (
-                          action.icon
-                        )}
-                        <span className="sr-only">{action.label}</span>
+                        <span className="sr-only">Abrir menú</span>
+                        <EllipsisVertical className="h-4 w-4" />
                       </Button>
-                    ))}
-                  </div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      {actions.map((action, actionIndex) => {
+                        const isDestructive =
+                          action.className?.includes('red') ||
+                          action.label.toLowerCase().includes('eliminar');
+                        const isLast = actionIndex === actions.length - 1;
+                        const nextAction = actions[actionIndex + 1];
+                        const nextIsDestructive =
+                          nextAction?.className?.includes('red') ||
+                          nextAction?.label.toLowerCase().includes('eliminar');
+
+                        return (
+                          <div key={actionIndex}>
+                            <DropdownMenuItem
+                              onClick={e => {
+                                e.stopPropagation();
+                                action.onClick(row);
+                              }}
+                              disabled={action.disabled?.(row) || action.loading?.(row)}
+                              className={cn(
+                                'cursor-pointer',
+                                isDestructive &&
+                                  'text-red-600 focus:text-red-600 dark:text-red-400',
+                                action.className
+                              )}
+                            >
+                              {action.loading?.(row) ? (
+                                <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                              ) : (
+                                <span className="mr-2">{action.icon}</span>
+                              )}
+                              {action.label}
+                            </DropdownMenuItem>
+                            {!isLast && !isDestructive && nextIsDestructive && (
+                              <DropdownMenuSeparator />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
               )}
             </TableRow>
