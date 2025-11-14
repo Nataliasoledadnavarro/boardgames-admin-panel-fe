@@ -14,6 +14,7 @@ export const productFormSchema = z.object({
       { message: 'El precio debe ser un número entre 0.01 y 99,999' }
     ),
   categoryId: z.string().min(1, 'Debes seleccionar una categoría'),
+  imageUrl: z.string().optional(),
 });
 
 export type ProductFormData = z.infer<typeof productFormSchema>;

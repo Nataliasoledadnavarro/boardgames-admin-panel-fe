@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { Package, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -34,22 +33,6 @@ export function ProductImage({
     lg: 'h-64 w-64',
   };
 
-  const isValidImageUrl = (url?: string): boolean => {
-    if (!url) return false;
-
-    // Rutas locales
-    if (url.startsWith('/')) return true;
-
-    // URLs de Picsum y otros permitidos
-    try {
-      const urlObj = new URL(url);
-      const allowedDomains = ['picsum.photos', 'images.unsplash.com'];
-      return allowedDomains.some(domain => urlObj.hostname.includes(domain));
-    } catch {
-      return false;
-    }
-  };
-
   const handleRetry = () => {
     setImageError(false);
     setIsLoading(true);
@@ -58,30 +41,18 @@ export function ProductImage({
     }
   };
 
-  // Estado de carga con Skeleton
-  if (isLoading && src && !imageError) {
-    return (
-      <div className={cn('relative', sizeClasses[size], className)}>
-        <Skeleton className={cn('w-full h-full rounded-lg', sizeClasses[size])} variant="medium" />
-        {/* Imagen oculta para manejar la carga */}
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          className="opacity-0"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          onLoad={() => setIsLoading(false)}
-          onError={() => {
-            setImageError(true);
-            setIsLoading(false);
-          }}
-        />
-      </div>
-    );
-  }
+  const handleImageLoad = () => {
+    setIsLoading(false);
+    setImageError(false);
+  };
 
-  // Estado de error con ErrorState
-  if (src && imageError && isValidImageUrl(src)) {
+  const handleImageError = () => {
+    setIsLoading(false);
+    setImageError(true);
+  };
+
+  // Estado de error
+  if (src && imageError) {
     return (
       <div className={cn('relative', sizeClasses[size], className)}>
         <ErrorState
@@ -99,7 +70,7 @@ export function ProductImage({
   }
 
   // Sin imagen
-  if (!src || !isValidImageUrl(src)) {
+  if (!src || src.trim() === '') {
     return (
       <div className={cn('relative', sizeClasses[size], fallbackClassName, className)}>
         <EmptyState
@@ -114,19 +85,24 @@ export function ProductImage({
     );
   }
 
-  // Imagen cargada exitosamente
+  // Imagen con estado de carga
   return (
     <div
       className={cn('relative rounded-lg overflow-hidden bg-muted', sizeClasses[size], className)}
     >
-      <Image
+      {isLoading && (
+        <Skeleton className="absolute inset-0 w-full h-full rounded-lg" variant="medium" />
+      )}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
         src={src}
         alt={alt}
-        fill
-        className="object-cover transition-opacity duration-300"
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        priority={false}
-        onError={() => setImageError(true)}
+        className={cn(
+          'w-full h-full object-cover transition-opacity duration-300',
+          isLoading ? 'opacity-0' : 'opacity-100'
+        )}
+        onLoad={handleImageLoad}
+        onError={handleImageError}
       />
     </div>
   );

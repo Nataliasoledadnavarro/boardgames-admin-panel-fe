@@ -23,7 +23,7 @@ import {
 import { useCategories, useCreateProduct, useUpdateProduct } from '@/hooks';
 import { Product, CreateProductDto, UpdateProductDto } from '@/types';
 import { productFormSchema, type ProductFormData } from './product-form-schema';
-import { Package, DollarSign, FileText, Tag } from 'lucide-react';
+import { Package, DollarSign, FileText, Tag, ImageIcon } from 'lucide-react';
 //import { toast } from 'sonner';
 
 interface ProductFormProps {
@@ -48,6 +48,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
       description: product?.description ?? '',
       price: product?.price?.toString() ?? '',
       categoryId: product?.categoryId ?? '',
+      imageUrl: product?.imageUrl ?? '',
     },
   });
 
@@ -62,6 +63,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
             description: data.description.trim(),
             price: parseFloat(data.price),
             categoryId: data.categoryId,
+            imageUrl: data.imageUrl?.trim() || undefined,
           };
 
           await updateProduct.mutateAsync(updateData);
@@ -71,6 +73,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
             description: data.description.trim(),
             price: parseFloat(data.price),
             categoryId: data.categoryId,
+            imageUrl: data.imageUrl?.trim() || undefined,
           };
 
           await createProduct.mutateAsync(createData);
@@ -125,6 +128,50 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
                 />
               </FormControl>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Campo URL de Imagen */}
+        <FormField
+          control={form.control}
+          name="imageUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2">
+                <ImageIcon className="h-4 w-4" />
+                URL de la imagen (opcional)
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="https://ejemplo.com/imagen.jpg"
+                  disabled={isLoading}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+              {field.value && (
+                <div className="mt-2">
+                  <p className="text-sm text-muted-foreground mb-2">Vista previa:</p>
+                  <div className="relative w-32 h-32 border rounded-lg overflow-hidden bg-gray-50">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={field.value}
+                      alt="Vista previa"
+                      className="w-full h-full object-cover"
+                      onError={e => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        const parent = target.parentElement;
+                        if (parent) {
+                          parent.innerHTML =
+                            '<div class="w-full h-full flex items-center justify-center text-red-500"><span class="text-xs">Error al cargar imagen</span></div>';
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
             </FormItem>
           )}
         />
