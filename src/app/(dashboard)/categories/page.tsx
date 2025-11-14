@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useCategories, useDeleteCategory } from '@/hooks';
+import { useCategories, useDeleteCategory } from '@/hooks/use-categories';
 import { useModal } from '@/hooks/use-modal';
 import { PageHeader, createCountBadge } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,7 @@ import { Modal } from '@/components/ui/modal';
 import { ErrorState } from '@/components/ui/error-state';
 import { DataTable } from '@/components/ui/data-table';
 import { DataTableColumn, DataTableAction } from '@/types/data-table';
+import { CategoryForm } from './category-form';
 import { Plus, Edit, Trash2, FolderOpen } from 'lucide-react';
 import { Category } from '@/types';
 import { formatTableDate } from '@/lib/utils/date';
@@ -103,17 +104,30 @@ export default function CategoriesPage() {
   // ErrorState
   if (error) {
     return (
-      <ErrorState
-        title="Error al cargar categorías"
-        description="No se pudieron obtener las categorías. Verifica tu conexión e inténtalo de nuevo."
-        error={error}
-        onRetry={() => refetch()}
-        actions={
-          <Button onClick={() => (window.location.href = '/')} variant="outline">
-            Ir al Dashboard
-          </Button>
-        }
-      />
+      <div className="space-y-6">
+        <PageHeader
+          icon={<FolderOpen className="h-6 w-6 text-white" />}
+          title="Gestión de Categorías"
+          description="Organiza y administra las categorías de productos"
+          badge={createCountBadge(0, 'categoría')}
+        />
+
+        <ErrorState
+          title="Error al cargar categorías"
+          description="No se pudieron obtener las categorías desde el servidor. Verifica tu conexión e inténtalo de nuevo."
+          error={error}
+          icon={<FolderOpen className="h-8 w-8" />}
+          onRetry={() => refetch()}
+          showRetry={true}
+          showGoHome={true}
+          variant="default"
+          actions={
+            <Button onClick={() => window.location.reload()} variant="outline" className="ml-2">
+              Recargar página
+            </Button>
+          }
+        />
+      </div>
     );
   }
 
@@ -152,25 +166,14 @@ export default function CategoriesPage() {
                 Nueva Categoría
               </Button>
             }
-            size="sm"
+            size="md"
           >
-            {/* Aquí irá el formulario */}
-            <div className="p-4 text-center text-muted-foreground">
-              <div className="space-y-4">
-                <div className="text-sm">
-                  {categoryModal.isEditing ? 'Editando:' : 'Creando nueva categoría'}
-                </div>
-                {categoryModal.selectedItem && (
-                  <div className="text-xs bg-muted p-2 rounded">
-                    <strong>Datos actuales:</strong>
-                    <br />
-                    Nombre: {categoryModal.selectedItem.name}
-                    <br />
-                    Descripción: {categoryModal.selectedItem.description}
-                  </div>
-                )}
-                <div className="text-muted-foreground">Formulario de categoría próximamente...</div>
-              </div>
+            <div className="space-y-4">
+              <CategoryForm
+                category={categoryModal.selectedItem}
+                onClose={() => categoryModal.close()}
+                onSuccess={() => refetch()}
+              />
             </div>
           </Modal>
         }
@@ -184,16 +187,20 @@ export default function CategoriesPage() {
         loading={isLoading}
         emptyState={{
           icon: <FolderOpen className="h-12 w-12" />,
-          title: searchTerm ? 'No se encontraron categorías' : 'Sin categorías',
+          title: searchTerm ? 'No se encontraron categorías' : 'Sin categorías registradas',
           description: searchTerm
-            ? 'Intenta con otros términos de búsqueda'
-            : 'Comenza creando tu primera categoría',
+            ? `No hay categorías que coincidan con "${searchTerm}". Intenta con otros términos de búsqueda.`
+            : 'Comienza creando tu primera categoría para organizar mejor tus productos.',
           action: !searchTerm ? (
             <Button onClick={() => categoryModal.open()} className="button-primary">
               <Plus className="h-4 w-4 mr-2" />
-              Nueva Categoría
+              Crear categoría
             </Button>
-          ) : undefined,
+          ) : (
+            <Button onClick={() => setSearchTerm('')} variant="outline">
+              Limpiar búsqueda
+            </Button>
+          ),
         }}
       />
 
