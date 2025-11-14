@@ -24,7 +24,7 @@ import { useCategories, useCreateProduct, useUpdateProduct } from '@/hooks';
 import { Product, CreateProductDto, UpdateProductDto } from '@/types';
 import { productFormSchema, type ProductFormData } from './product-form-schema';
 import { Package, DollarSign, FileText, Tag, ImageIcon } from 'lucide-react';
-//import { toast } from 'sonner';
+import { toast } from 'sonner';
 
 interface ProductFormProps {
   product?: Product | null;
@@ -67,6 +67,9 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
           };
 
           await updateProduct.mutateAsync(updateData);
+          toast.success('Producto actualizado correctamente', {
+            description: `${data.name} ha sido actualizado exitosamente.`,
+          });
         } else {
           const createData: CreateProductDto = {
             name: data.name.trim(),
@@ -77,12 +80,18 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
           };
 
           await createProduct.mutateAsync(createData);
+          toast.success('Producto creado correctamente', {
+            description: `${data.name} ha sido agregado al inventario.`,
+          });
         }
 
         onClose();
         onSuccess?.();
       } catch (error) {
         console.error('Error:', error);
+        toast.error(isEditing ? 'Error al actualizar producto' : 'Error al crear producto', {
+          description: 'Ocurrió un problema. Por favor, intenta de nuevo.',
+        });
       }
     },
     [isEditing, product, createProduct, updateProduct, onClose, onSuccess]

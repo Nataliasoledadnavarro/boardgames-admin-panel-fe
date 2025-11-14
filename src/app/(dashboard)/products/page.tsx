@@ -17,6 +17,7 @@ import { ProductForm } from './product-form';
 import { Plus, Edit, Trash2, Package, Eye } from 'lucide-react';
 import { Product } from '@/types/product';
 import { formatTableDate } from '@/lib/utils/date';
+import { toast } from 'sonner';
 
 export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -34,8 +35,14 @@ export default function ProductsPage() {
         try {
           await deleteProduct.mutateAsync(product.id);
           confirmation.closeConfirmation();
+          toast.success('Producto eliminado correctamente', {
+            description: `${product.name} ha sido eliminado del inventario.`,
+          });
         } catch (error) {
           console.error('Error al eliminar producto:', error);
+          toast.error('Error al eliminar producto', {
+            description: 'Ocurrió un problema. Por favor, intenta de nuevo.',
+          });
         }
       },
       deleteProduct.isPending

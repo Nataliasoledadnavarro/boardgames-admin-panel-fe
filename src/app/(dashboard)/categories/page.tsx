@@ -16,6 +16,7 @@ import { CategoryForm } from './category-form';
 import { Plus, Edit, Trash2, FolderOpen } from 'lucide-react';
 import { Category } from '@/types';
 import { formatTableDate } from '@/lib/utils/date';
+import { toast } from 'sonner';
 
 export default function CategoriesPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -33,8 +34,14 @@ export default function CategoriesPage() {
         try {
           await deleteCategory.mutateAsync(category.id);
           confirmation.closeConfirmation();
+          toast.success('Categoría eliminada correctamente', {
+            description: `${category.name} ha sido eliminada del sistema.`,
+          });
         } catch (error) {
           console.error('Error al eliminar categoría:', error);
+          toast.error('Error al eliminar categoría', {
+            description: 'Ocurrió un problema. Por favor, intenta de nuevo.',
+          });
         }
       },
       deleteCategory.isPending

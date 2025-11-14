@@ -8,7 +8,6 @@ import { useViewport } from '@/hooks/use-viewport';
 import {
   Package,
   FolderOpen,
-  Settings,
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -31,11 +30,6 @@ const navigation = [
     name: 'Categorías',
     href: '/categories',
     icon: FolderOpen,
-  },
-  {
-    name: 'Configuración',
-    href: '/settings',
-    icon: Settings,
   },
 ];
 
