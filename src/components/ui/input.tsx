@@ -1,10 +1,8 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 
-export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'suppressHydrationWarning'> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   asChild?: boolean;
-  suppressHydrationWarning?: boolean;
 }
 
 // interfaz para Textarea
@@ -13,7 +11,7 @@ export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextArea
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, suppressHydrationWarning = true, ...props }, ref) => {
+  ({ className, type, ...props }, ref) => {
     return (
       <input
         type={type}
@@ -22,7 +20,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className
         )}
         ref={ref}
-        suppressHydrationWarning={suppressHydrationWarning}
         {...props}
       />
     );
