@@ -24,7 +24,6 @@ import { useCategories, useCreateProduct, useUpdateProduct } from '@/hooks';
 import { Product, CreateProductDto, UpdateProductDto } from '@/types';
 import { productFormSchema, type ProductFormData } from './product-form-schema';
 import { Package, DollarSign, FileText, Tag, ImageIcon } from 'lucide-react';
-import { toast } from 'sonner';
 
 interface ProductFormProps {
   product?: Product | null;
@@ -47,7 +46,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
       name: product?.name ?? '',
       description: product?.description ?? '',
       price: product?.price?.toString() ?? '',
-      categoryId: product?.categoryId ?? '',
+      categoryId: product?.category.id.toString() ?? '',
       imageUrl: product?.imageUrl ?? '',
     },
   });
@@ -58,40 +57,34 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
       try {
         if (isEditing && product) {
           const updateData: UpdateProductDto = {
-            id: product.id,
             name: data.name.trim(),
             description: data.description.trim(),
             price: parseFloat(data.price),
-            categoryId: data.categoryId,
+            category: {
+              id: parseInt(data.categoryId, 10),
+            },
             imageUrl: data.imageUrl?.trim() || undefined,
           };
 
-          await updateProduct.mutateAsync(updateData);
-          toast.success('Producto actualizado correctamente', {
-            description: `${data.name} ha sido actualizado exitosamente.`,
-          });
+          await updateProduct.mutateAsync({ id: product.id, ...updateData });
         } else {
           const createData: CreateProductDto = {
             name: data.name.trim(),
             description: data.description.trim(),
             price: parseFloat(data.price),
-            categoryId: data.categoryId,
+            category: {
+              id: parseInt(data.categoryId, 10),
+            },
             imageUrl: data.imageUrl?.trim() || undefined,
           };
 
           await createProduct.mutateAsync(createData);
-          toast.success('Producto creado correctamente', {
-            description: `${data.name} ha sido agregado al inventario.`,
-          });
         }
 
         onClose();
         onSuccess?.();
       } catch (error) {
         console.error('Error:', error);
-        toast.error(isEditing ? 'Error al actualizar producto' : 'Error al crear producto', {
-          description: 'Ocurrió un problema. Por favor, intenta de nuevo.',
-        });
       }
     },
     [isEditing, product, createProduct, updateProduct, onClose, onSuccess]

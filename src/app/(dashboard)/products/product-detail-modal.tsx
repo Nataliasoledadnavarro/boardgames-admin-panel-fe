@@ -49,7 +49,7 @@ export function ProductDetailModal({ product, isOpen, onClose }: ProductDetailMo
               <Tag className="h-4 w-4" />
               Categoría
             </div>
-            <p className="font-medium">{product.categoryName}</p>
+            <p className="font-medium">{product.category.name}</p>
           </div>
 
           {/* Fecha de creación */}

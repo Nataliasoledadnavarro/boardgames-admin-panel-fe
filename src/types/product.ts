@@ -1,23 +1,32 @@
+import { Category } from './category';
+
 export interface Product {
-  id: string;
+  id: number;
   name: string;
   description: string;
   price: number;
-  categoryId: string;
-  categoryName?: string;
   imageUrl?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  category: Category;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateProductDto {
   name: string;
   description: string;
   price: number;
-  categoryId: string;
   imageUrl?: string;
+  category: {
+    id: number;
+  };
 }
 
-export interface UpdateProductDto extends Partial<CreateProductDto> {
-  id: string;
+export interface UpdateProductDto {
+  name?: string;
+  description?: string;
+  price?: number;
+  imageUrl?: string;
+  category?: {
+    id: number;
+  };
 }

@@ -17,7 +17,6 @@ import { useCreateCategory, useUpdateCategory } from '@/hooks';
 import { CreateCategoryDto, UpdateCategoryDto, Category } from '@/types';
 import { categoryFormSchema, type CategoryFormData } from './category-form-shema';
 import { Package, FileText } from 'lucide-react';
-import { toast } from 'sonner';
 
 interface CategoryFormProps {
   category?: Category | null;
@@ -41,21 +40,15 @@ export function CategoryForm({ category, onClose, onSuccess }: CategoryFormProps
     },
   });
 
-  // Submit handler con tipos explícitos
   const onSubmit = React.useCallback(
     async (data: CategoryFormData) => {
       try {
         if (isEditing && category) {
           const updateData: UpdateCategoryDto = {
-            id: category.id,
             name: data.name.trim(),
             description: data.description.trim(),
           };
-
-          await updateCategory.mutateAsync(updateData);
-          toast.success('Categoría actualizada correctamente', {
-            description: `${data.name} ha sido actualizada exitosamente.`,
-          });
+          await updateCategory.mutateAsync({ id: category.id, ...updateData });
         } else {
           const createData: CreateCategoryDto = {
             name: data.name.trim(),
@@ -63,18 +56,12 @@ export function CategoryForm({ category, onClose, onSuccess }: CategoryFormProps
           };
 
           await createCategory.mutateAsync(createData);
-          toast.success('Categoría creada correctamente', {
-            description: `${data.name} ha sido agregada al sistema.`,
-          });
         }
 
         onClose();
         onSuccess?.();
       } catch (error) {
         console.error('Error:', error);
-        toast.error(isEditing ? 'Error al actualizar categoría' : 'Error al crear categoría', {
-          description: 'Ocurrió un problema. Por favor, intenta de nuevo.',
-        });
       }
     },
     [isEditing, category, createCategory, updateCategory, onClose, onSuccess]

@@ -15,8 +15,7 @@ import { DataTableColumn, DataTableAction } from '@/types/data-table';
 import { CategoryForm } from './category-form';
 import { Plus, Edit, Trash2, FolderOpen } from 'lucide-react';
 import { Category } from '@/types';
-import { formatTableDate } from '@/lib/utils/date';
-import { toast } from 'sonner';
+import { formatTableDate } from '@/lib/utils';
 
 export default function CategoriesPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -34,14 +33,8 @@ export default function CategoriesPage() {
         try {
           await deleteCategory.mutateAsync(category.id);
           confirmation.closeConfirmation();
-          toast.success('Categoría eliminada correctamente', {
-            description: `${category.name} ha sido eliminada del sistema.`,
-          });
         } catch (error) {
           console.error('Error al eliminar categoría:', error);
-          toast.error('Error al eliminar categoría', {
-            description: 'Ocurrió un problema. Por favor, intenta de nuevo.',
-          });
         }
       },
       deleteCategory.isPending
@@ -52,7 +45,7 @@ export default function CategoriesPage() {
   const filteredCategories = categories.filter(
     category =>
       category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      category.description.toLowerCase().includes(searchTerm.toLowerCase())
+      category.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Definir columnas de la tabla
@@ -66,22 +59,20 @@ export default function CategoriesPage() {
       key: 'description',
       title: 'Descripción',
       className: 'max-w-md',
-      render: value => <span className="truncate block">{String(value)}</span>,
+      render: value => <span className="truncate block">{String(value || '-')}</span>,
     },
     {
       key: 'createdAt',
       title: 'Creada',
       render: value => {
-        const date = value instanceof Date ? value : new Date(value as string);
-        return <span className="text-muted-foreground">{formatTableDate(date.toISOString())}</span>;
+        return <span className="text-muted-foreground">{formatTableDate(value as string)}</span>;
       },
     },
     {
       key: 'updatedAt',
       title: 'Actualizada',
       render: value => {
-        const date = value instanceof Date ? value : new Date(value as string);
-        return <span className="text-muted-foreground">{formatTableDate(date.toISOString())}</span>;
+        return <span className="text-muted-foreground">{formatTableDate(value as string)}</span>;
       },
     },
   ];
@@ -98,13 +89,7 @@ export default function CategoriesPage() {
       icon: <Trash2 className="h-4 w-4" />,
       onClick: handleDelete,
       className: 'hover:bg-red-500/10 hover:text-red-600',
-      disabled: category => {
-        return (
-          deleteCategory.isPending ||
-          category.name === 'General' ||
-          (category.productCount ?? 0) > 0
-        );
-      },
+      disabled: () => deleteCategory.isPending,
     },
   ];
 

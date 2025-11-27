@@ -1,66 +1,73 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { CreateProductDto, UpdateProductDto } from '@/types/product';
-import { productsService } from '@/services/products-service';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { productsService } from '@/services/products.service';
+import { CreateProductDto, UpdateProductDto } from '@/types';
 
-const PRODUCTS_QUERY_KEY = 'products';
+const PRODUCTS_KEY = ['products'];
 
-// Hook para obtener todos los productos
 export const useProducts = () => {
   return useQuery({
-    queryKey: [PRODUCTS_QUERY_KEY],
-    queryFn: async () => {
-      const [data] = await Promise.all([
-        productsService.getAll(),
-        new Promise(resolve => setTimeout(resolve, 1500)),
-      ]);
-      return data;
-    },
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    queryKey: PRODUCTS_KEY,
+    queryFn: () => productsService.getAll(),
   });
 };
 
-// Hook para obtener producto por ID
-export const useProduct = (id: string) => {
+export const useProductById = (id: number) => {
   return useQuery({
-    queryKey: [PRODUCTS_QUERY_KEY, id],
+    queryKey: [...PRODUCTS_KEY, id],
     queryFn: () => productsService.getById(id),
     enabled: !!id,
   });
 };
 
-// Hook para crear producto
+export const useProductsByCategory = (categoryId: number) => {
+  return useQuery({
+    queryKey: [...PRODUCTS_KEY, 'category', categoryId],
+    queryFn: () => productsService.getByCategory(categoryId),
+    enabled: !!categoryId,
+  });
+};
+
 export const useCreateProduct = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (product: CreateProductDto) => productsService.create(product),
+    mutationFn: (dto: CreateProductDto) => productsService.create(dto),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [PRODUCTS_QUERY_KEY] });
+      queryClient.invalidateQueries({ queryKey: PRODUCTS_KEY });
     },
   });
 };
 
-// Hook para actualizar producto
 export const useUpdateProduct = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (product: UpdateProductDto) => productsService.update(product),
+    mutationFn: ({ id, ...dto }: UpdateProductDto & { id: number }) =>
+      productsService.update(id, dto),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [PRODUCTS_QUERY_KEY] });
+      queryClient.invalidateQueries({ queryKey: PRODUCTS_KEY });
     },
   });
 };
 
-// Hook para eliminar producto
 export const useDeleteProduct = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => productsService.delete(id),
+    mutationFn: (id: number) => productsService.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [PRODUCTS_QUERY_KEY] });
+      queryClient.invalidateQueries({ queryKey: PRODUCTS_KEY });
+    },
+  });
+};
+
+export const useDuplicateProduct = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) => productsService.duplicateProduct(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: PRODUCTS_KEY });
     },
   });
 };
